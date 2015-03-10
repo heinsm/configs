@@ -1,0 +1,65 @@
+***********
+20140714 - tmux install
+***********
+
+
+CENTOS 6.5 - needs some support libs first
+(*note: if wget don't work, go fetch manually... for somereason behind work proxy, github ssl wgets were failing!)
+    yum -y install ncurses-devel
+
+    wget https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz
+    tar -xvzf libevent-2.0.21-stable.tar.gz
+    cd libevent-2.0.21-stable
+    ./configure
+    make
+    make install
+
+    wget http://downloads.sourceforge.net/tmux/tmux-1.9a.tar.gz
+    tar -xvzf tmux-1.9a.tar.gz
+    cd tmux-1.9a
+    ./configure
+    make
+    make install
+
+    echo export LD_LIBRARY_PATH=/usr/local/lib >> ~/.bash_profile
+    . ~/.bash_profile
+
+
+General install
+    install tmux
+    install tmux.conf into /etc
+    install symlink: ln -s /root/scripts/tmx.sh /usr/local/bin/tmx
+    install tmx script: /root/scripts/tmx
+    add to user's .bashrc(near bottom):  tmx 0
+
+
+*********
+Titlebar support - putty window titles
+*********
+General
+    tmux.conf
+        -add:
+            set -g set-titles on
+            set -g set-titles-string "#T"
+        -add :XT to terminal overrides
+            set -g terminal-overrides "xterm*:XT:smcup@:rmcup@"
+
+Centos
+    /etc/bashrc
+        -in select case $TERM; add (*) to screen) --- such as "screen*"
+
+Ubuntu - precise
+    ~/.bashrc
+        -in in select case $TERM; add screen*) such as below
+            case "$TERM" in
+                xterm*|rxvt*|screen*)
+Debian
+    /etc/bash.bashrc
+        uncomment the lines and add screen* to the case
+            case "$TERM" in
+            screen*|xterm*|rxvt*)
+                PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+                ;;
+            *)
+                ;;
+            esac
